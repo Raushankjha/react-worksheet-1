@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>State management</title>
+</head>
+
+<body>
+    <div id="root">
+
+    </div>
+</body>
+
+</html>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+
+    function App() {
+        return (
+            <InputForm />
+        )
+    }
+    function InputForm() {
+        const [userData, setUserData] = React.useState({ name: '', email: '', role: '' });
+        const [users, setUsers] = React.useState([]);
+        const [editIndex, setEditIndex] = React.useState(null);
+
+
+        function handleInputChange(event) {
+            const { name, value } = event.target;
+            setUserData({ ...userData, [name]: value });
+        }
+
+        function handleData() {
+
+            if (editIndex !== null) {
+                
+                const updatedUsers = users.map((user, index) =>
+                    index === editIndex ? userData : user
+                );
+                setUsers(updatedUsers);
+                setEditIndex(null); 
+            } else {
+                
+                setUsers([...users, userData]);
+            }
+            setUserData({ name: '', email: '', role: '' }); 
+        }
+
+        function handleEdit(index) {
+            setUserData(users[index]); 
+            setEditIndex(index); 
+        }
+
+
+        return (
+            <>
+                <div>
+                    <h1>InputData from user</h1>
+                    <input type="text" placeholder="Enter Name" name="name" value={userData.name} onChange={handleInputChange} />
+                    <input type="text" placeholder="Enter Email" name="email" value={userData.email} onChange={handleInputChange} />
+                    <input type="text" placeholder="Role of a company" name="role" value={userData.role} onChange={handleInputChange} />
+                    <button onClick={handleData}>{editIndex !== null ? "Update Data" : "Save Data"}</button>
+                </div>
+                <div>
+                    <h2>Saved Users:</h2>
+                    <ul>
+                        {users.map((user, index) => (
+                            <li key={index}>
+                                Name: {user.name}, Email: {user.email}, Role: {user.role}
+                                <button onClick={() => handleEdit(index)}>Edit</button>
+                            </li>
+                        ))}
+                    </ul>
+
+                </div>
+
+            </>
+        )
+    }
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+
+</script>
